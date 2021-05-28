@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationProperty {
 
     /**
-     * 是否校验签名 0-不校验
+     * 是否校验签名
      */
     private Boolean isCheckSign = true;
 

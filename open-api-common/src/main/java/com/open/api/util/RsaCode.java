@@ -42,21 +42,16 @@ public class RsaCode {
      * @return map 密钥的map
      */
     public static Map<String, Object> initKey() throws NoSuchAlgorithmException {
-
         // 实例化 RSA密钥生成器
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
         // 初始化密钥生成器
         keyPairGenerator.initialize(KEY_SIZE);
         // 生成密钥对
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
-
         // 公钥
         RSAPublicKey rsaPublicKey = (RSAPublicKey) keyPair.getPublic();
-        System.out.println("系数：" + rsaPublicKey.getModulus() + " 加密指数：" + rsaPublicKey.getPublicExponent());
         // 私钥
         RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) keyPair.getPrivate();
-        System.out.println("系数：" + rsaPrivateKey.getModulus() + " 解密指数：" + rsaPrivateKey.getPrivateExponent());
-
         // 密钥存储在 map 中
         Map<String, Object> keyMap = Maps.newHashMap();
         keyMap.put(PUBLIC_KEY, rsaPublicKey);
@@ -141,7 +136,7 @@ public class RsaCode {
         System.out.println("公钥：" + new String(Base64.encodeBase64(publicKey)));
         System.out.println("私钥：" + new String(Base64.encodeBase64(privateKey)));
 
-        System.out.println("================密钥对构造完毕,甲方将公钥公布给乙方，开始进行加密数据的传输 =============\n");
+        System.out.println("================数据传输：公钥加密，私钥解密  start =============");
         // 乙方要发送的数据
         String data2 = "我是乙方";
         System.out.println("原文:" + data2);
@@ -152,8 +147,10 @@ public class RsaCode {
         // 甲方使用私钥对数据进行解密
         byte[] decode2 = RsaCode.decryptByPrivateKey(code2, privateKey);
         System.out.println("甲方解密后的数据：" + new String(decode2));
+        System.out.println("================数据传输：公钥加密，私钥解密  end  =============");
 
-        System.out.println("\n=========== 私钥签名，公钥验签 ==============\n");
+
+        System.out.println("===========签名： 私钥签名，公钥验签 start ==============");
         String data3 = "签名及验签";
         // 签名
         Signature signature = Signature.getInstance(SIGN_ALGORITHM);
@@ -171,16 +168,6 @@ public class RsaCode {
         } else {
             System.out.println("验签失败,数据被更改了");
         }
-
-
-//        String id = "20c60e0d6e5a490b811f51fd298e6279";
-        //String id = "10000000";
-//        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-//        if(pattern.matcher(id).matches()){
-//            System.out.println(true);
-//        }else{
-//            System.out.println(false);
-//        }
-
+        System.out.println("===========签名： 私钥签名，公钥验签 end ==============");
     }
 }

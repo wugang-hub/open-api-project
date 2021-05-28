@@ -18,19 +18,10 @@ import org.springframework.stereotype.Service;
 public class TestOneServiceImpl implements TestOneService {
 
     /**
-     * 日志
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestOneServiceImpl.class);
-
-    /**
      * 方法1
      */
     @Override
     public Object testMethod1(String requestId, Test1BO test1BO) {
-        String aa = JSON.toJSONString(test1BO);
-        System.out.println(aa);
-        LOGGER.info("【{}】>> 测试开放接口1 >> 方法1 params={}", requestId, JSON.toJSONString(test1BO));
-
-        return "aaaa";
+        return JSON.toJSONString(test1BO);
     }
 }

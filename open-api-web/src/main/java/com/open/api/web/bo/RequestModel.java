@@ -23,7 +23,7 @@ public class RequestModel implements Serializable {
     /**
      *业务方appId
      */
-    private String app_id;
+    private String appId;
 
     /**
      *请求方法
@@ -38,7 +38,7 @@ public class RequestModel implements Serializable {
     /**
      *请求标识（用于日志中分辨是否是同一次请求）
      */
-    private String api_request_id;
+    private String apiRequestId;
 
     /**
      *请求编码 默认：UTF-8
@@ -48,7 +48,7 @@ public class RequestModel implements Serializable {
     /**
      *签名类型：RSA或RSA2
      */
-    private String sign_type;
+    private String signType;
 
     /**
      *签名

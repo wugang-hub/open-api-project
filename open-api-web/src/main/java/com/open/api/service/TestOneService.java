@@ -14,4 +14,5 @@ public interface TestOneService {
      */
     @OpenApi(method = "open.api.test.one.method1", desc = "测试接口1,方法1")
     Object testMethod1(String requestId, Test1BO test1BO);
+
 }

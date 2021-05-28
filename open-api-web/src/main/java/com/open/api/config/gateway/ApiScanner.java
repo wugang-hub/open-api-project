@@ -22,16 +22,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Api接口扫描器
+ * Api接口扫描器，添加到容器中
  *
  * @author wugang
  */
 @Component
 public class ApiScanner implements CommandLineRunner {
-
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApiScanner.class);
-
     /**
      * 方法签名拆分正则
      */
@@ -56,7 +52,6 @@ public class ApiScanner implements CommandLineRunner {
         Map<String, Object> openApiServiceBeanMap = ApplicationContextHelper.getBeansWithAnnotation(OpenApiService.class);
 
         if (null == openApiServiceBeanMap || openApiServiceBeanMap.isEmpty()) {
-            LOGGER.info("open api service bean map is empty");
             return;
         }
 
@@ -73,16 +68,13 @@ public class ApiScanner implements CommandLineRunner {
                 //获取业务参数对象
                 String paramName = getParamName(method);
                 if (StringUtils.isBlank(paramName)) {
-                    LOGGER.warn("Api接口业务参数缺失 >> method = {}", openApi.method());
                     continue;
                 }
 
                 //组建ApiModel- 放入api容器
                 apiContainer.put(openApi.method(), new ApiModel(map.getKey(), method, paramName));
-                LOGGER.info("Api接口加载成功 >> method = {} , desc={}", openApi.method(), openApi.desc());
             }
         }
-        LOGGER.info("Api接口容器加载完毕 >> size = {} loopTimes={}", apiContainer.size(), atomicInteger.get());
     }
 
     /**

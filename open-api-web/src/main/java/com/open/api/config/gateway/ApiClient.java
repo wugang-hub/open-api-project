@@ -82,7 +82,6 @@ public class ApiClient {
         try {
             //校验签名开关
             if (!applicationProperty.getIsCheckSign()) {
-                LOGGER.warn("【{}】>> 验签开关关闭", requestRandomId);
                 return;
             }
             //map类型转换
@@ -90,16 +89,15 @@ public class ApiClient {
             for (String s : params.keySet()) {
                 map.put(s, params.get(s).toString());
             }
-            LOGGER.warn("【{}】 >> 验签参数 {}", requestRandomId, map);
+            LOGGER.warn("开始验签");
             boolean checkSign = rsaCheckV1(map, applicationProperty.getPublicKey(), applicationProperty.getPrivateKey(), charset, signType);
             if (!checkSign) {
-                LOGGER.info("【{}】 >> 验签失败 >> params = {}", requestRandomId, JSON.toJSONString(params));
+                LOGGER.info("验签失败");
                 throw new BusinessException(ApiExceptionEnum.INVALID_SIGN);
             }
-            LOGGER.warn("【{}】 >> 验签成功", requestRandomId);
+            LOGGER.warn("验签成功");
         } catch (Exception e) {
-            LOGGER.error("【{}】 >> 验签异常 >> params = {}, error = {}",
-                    requestRandomId, JSON.toJSONString(params), ExceptionUtils.getStackTrace(e));
+            LOGGER.error("验签异常");
             throw new BusinessException(ApiExceptionEnum.INVALID_SIGN);
         }
     }
@@ -203,13 +201,13 @@ public class ApiClient {
         //获取api方法
         ApiModel apiModel = apiContainer.get(method);
         if (null == apiModel) {
-            LOGGER.info("【{}】 >> API方法不存在 >> method = {}", requestRandomId, method);
+            LOGGER.info("API方法不存在");
             throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
         }
         //获得spring bean
         Object bean = ApplicationContextHelper.getBean(apiModel.getBeanName());
         if (null == bean) {
-            LOGGER.warn("【{}】 >> API方法不存在 >> method = {}, beanName = {}", requestRandomId, method, apiModel.getBeanName());
+            LOGGER.warn("API方法不存在");
             throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
         }
         //处理业务参数

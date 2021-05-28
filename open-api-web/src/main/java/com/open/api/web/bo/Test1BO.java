@@ -15,23 +15,10 @@ import java.util.List;
 public class Test1BO implements Serializable {
     private static final long serialVersionUID = -1L;
 
-    @Valid
-    @NotEmpty(message = "集合不为空！")
-    @Size(min = 1, message = "最小为{min}")
-    private List<Item> itemList;
-
-    @Data
-    public static class Item {
-        @NotBlank(message = "username 不能为空！")
-        private String username;
-
-        @NotBlank(message = "password 不能为空！")
-        private String password;
-
-        @NotBlank(message = "realName 不能为空！")
-        private String realName;
-
-    }
+    @NotBlank(message = "username 不能为空！")
+    private String username;
+    @NotBlank(message = "password 不能为空！")
+    private String password;
 
     @Override
     public String toString() {

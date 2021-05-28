@@ -1,5 +1,5 @@
 项目介绍 :open-api-project 对外接口统一网关鉴权
-Spring Boot + OpenApi + MyBatis-plus + freemarker
+Spring Boot + MyBatis-plus + freemarker + jdk1.8
 
 设计思路:
 公私钥对：公钥加密，私钥解密；  私钥生成签名，公钥验签。
