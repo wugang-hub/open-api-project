@@ -28,4 +28,9 @@ public class ApplicationProperty {
      * 验签公钥
      */
     private String publicKey;
+
+    /**
+     * ip
+     */
+    private String ipAddr;
 }

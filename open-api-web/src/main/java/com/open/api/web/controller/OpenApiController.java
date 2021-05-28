@@ -43,8 +43,7 @@ public class OpenApiController {
      }
      */
     @PostMapping("/gateway")
-    public ResultModel gateway(@RequestBody RequestModel req) throws Throwable {
-
+    public ResultModel gateway(@RequestBody RequestModel req, HttpServletRequest request) throws Throwable {
         //封装参数map
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("app_id", req.getAppId());
@@ -56,6 +55,8 @@ public class OpenApiController {
         params.put("sign", req.getSign());
         params.put("content", JSON.parse(req.getContent()).toString());
 
+        //ip校验
+        apiClient.checkIpAddr(request);
         //验签
         apiClient.checkSign(params, req.getApiRequestId(), req.getCharset(), req.getSignType());
         //请求接口

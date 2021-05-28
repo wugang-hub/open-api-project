@@ -16,6 +16,7 @@ public enum ApiExceptionEnum implements EnumInterface {
     INVALID_REQUEST_ERROR("INVALID_REQUEST_ERROR", " 请求方式 {0} 错误 ! 请使用 {1} 方式"),
     INVALID_PARAM("INVALID_PARAM", "无效参数 >> 参数[{0}] >> 原因[{1}]"),
     INVALID_SIGN("INVALID_SIGN", "无效签名"),
+    INVALID_IP("INVALID_IP", "无效IP地址");
     ;
 
     ApiExceptionEnum(String code, String msg) {

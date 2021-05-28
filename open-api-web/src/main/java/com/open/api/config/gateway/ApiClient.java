@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -70,13 +71,27 @@ public class ApiClient {
     private ApplicationProperty applicationProperty;
 
     /**
+     * ip校验
+     * @param request 请求参数request
+     */
+    public void checkIpAddr(HttpServletRequest request){
+        LOGGER.info("ip校验开始");
+        String ipAddr = getIpAddr(request);
+        System.out.println(ipAddr);
+        if(StringUtils.isEmpty(ipAddr) || !ipAddr.equals(applicationProperty.getIpAddr())){
+            LOGGER.info("ip校验失败");
+            throw new BusinessException(ApiExceptionEnum.INVALID_IP);
+        }
+        LOGGER.info("ip校验成功");
+    }
+
+    /**
      * 验签
      *
      * @param params          请求参数
      * @param requestRandomId 请求随机标识（用于日志中分辨是否是同一次请求）
      * @param charset         请求编码
      * @param signType        签名格式
-     * @author wugang
      */
     public void checkSign(Map<String, Object> params, String requestRandomId, String charset, String signType) {
         try {
@@ -227,6 +242,37 @@ public class ApiClient {
                 throw ((InvocationTargetException) e).getTargetException();
             }
             throw new BusinessException(ApiExceptionEnum.SYSTEM_ERROR);
+        }
+    }
+
+    public String getIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("X-Real-IP");
+        if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            if(ip.contains("../")||ip.contains("..\\")){
+                return "";
+            }
+            return ip;
+        }
+        ip = request.getHeader("X-Forwarded-For");
+        if (!StringUtils.isBlank(ip) && !"unknown".equalsIgnoreCase(ip)) {
+            // 多次反向代理后会有多个IP值，第一个为真实IP。
+            int index = ip.indexOf(',');
+            if (index != -1) {
+                ip= ip.substring(0, index);
+            }
+            if(ip.contains("../")||ip.contains("..\\")){
+                return "";
+            }
+            return ip;
+        } else {
+            ip=request.getRemoteAddr();
+            if(ip.contains("../")||ip.contains("..\\")){
+                return "";
+            }
+            if(ip.equals("0:0:0:0:0:0:0:1")){
+                ip="127.0.0.1";
+            }
+            return ip;
         }
     }
 }
