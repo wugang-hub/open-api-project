@@ -1,4 +1,4 @@
-项目介绍 :open-api 对外接口统一网关鉴权
+项目介绍 :open-api-project 对外接口统一网关鉴权
 Spring Boot + OpenApi + MyBatis-plus + freemarker
 
 设计思路:
