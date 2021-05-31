@@ -25,9 +25,7 @@ public class ValidateUtils {
         //如果有验证信息，则取出包装成异常返回
         ConstraintViolation<T> constraintViolation = getFirst(constraintViolations, null);
         if (constraintViolation != null) {
-            throw new BusinessException(ApiExceptionEnum.INVALID_PARAM,
-                    CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, constraintViolation.getPropertyPath().toString()),
-                    constraintViolation.getMessage());
+            throw new BusinessException(ApiExceptionEnum.INVALID_PARAM.getCode(), ApiExceptionEnum.INVALID_PARAM.getMsg());
 
         }
     }

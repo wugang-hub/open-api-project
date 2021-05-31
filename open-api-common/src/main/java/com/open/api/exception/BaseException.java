@@ -8,21 +8,19 @@ import java.text.MessageFormat;
  */
 public class BaseException extends RuntimeException {
 
-    protected boolean success;
+    protected boolean status;
     protected String errorMsg;
     protected String errorCode;
-    protected Object data;
 
     protected BaseException(String message) {
         super(message);
     }
 
-    protected BaseException(Boolean success, String code, String msgFormat, Object... args) {
+    protected BaseException(Boolean status, String code, String msgFormat, Object... args) {
         super(MessageFormat.format(msgFormat, args));
-        this.success = success;
+        this.status = status;
         this.errorCode = code;
         this.errorMsg = MessageFormat.format(msgFormat, args);
-        this.data = null;
     }
 
     public String getErrorMsg() {
@@ -33,11 +31,4 @@ public class BaseException extends RuntimeException {
         return this.errorCode;
     }
 
-    public Boolean getSuccess(){
-        return this.success;
-    }
-
-    public Object getData() {
-        return this.data;
-    }
 }

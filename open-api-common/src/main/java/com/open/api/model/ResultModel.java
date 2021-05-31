@@ -17,7 +17,7 @@ public class ResultModel implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private boolean success;
+    private boolean status;
     private Object data;
     private String errorCode;
     private String errorMsg;
@@ -28,7 +28,7 @@ public class ResultModel implements Serializable {
      * @param data
      */
     public ResultModel(Object data) {
-        this.success = true;
+        this.status = true;
         this.data = data;
     }
 
@@ -39,7 +39,7 @@ public class ResultModel implements Serializable {
      * @param errorMsg
      */
     public ResultModel(String errorCode, String errorMsg) {
-        this.success = false;
+        this.status = false;
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }

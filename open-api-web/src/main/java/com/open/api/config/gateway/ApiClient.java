@@ -80,7 +80,7 @@ public class ApiClient {
         System.out.println(ipAddr);
         if(StringUtils.isEmpty(ipAddr) || !ipAddr.equals(applicationProperty.getIpAddr())){
             LOGGER.info("ip校验失败");
-            throw new BusinessException(ApiExceptionEnum.INVALID_IP);
+            throw new BusinessException(ApiExceptionEnum.INVALID_IP.getCode(), ApiExceptionEnum.INVALID_IP.getMsg());
         }
         LOGGER.info("ip校验成功");
     }
@@ -108,12 +108,12 @@ public class ApiClient {
             boolean checkSign = rsaCheckV1(map, applicationProperty.getPublicKey(), applicationProperty.getPrivateKey(), charset, signType);
             if (!checkSign) {
                 LOGGER.info("验签失败");
-                throw new BusinessException(ApiExceptionEnum.INVALID_SIGN);
+                throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
             }
             LOGGER.warn("验签成功");
         } catch (Exception e) {
             LOGGER.error("验签异常");
-            throw new BusinessException(ApiExceptionEnum.INVALID_SIGN);
+            throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
         }
     }
 
@@ -217,13 +217,13 @@ public class ApiClient {
         ApiModel apiModel = apiContainer.get(method);
         if (null == apiModel) {
             LOGGER.info("API方法不存在");
-            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
+            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
         }
         //获得spring bean
         Object bean = ApplicationContextHelper.getBean(apiModel.getBeanName());
         if (null == bean) {
             LOGGER.warn("API方法不存在");
-            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
+            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
         }
         //处理业务参数
         // 忽略JSON字符串中存在，而在Java中不存在的属性
@@ -241,7 +241,7 @@ public class ApiClient {
             if (e instanceof InvocationTargetException) {
                 throw ((InvocationTargetException) e).getTargetException();
             }
-            throw new BusinessException(ApiExceptionEnum.SYSTEM_ERROR);
+            throw new BusinessException(ApiExceptionEnum.SYSTEM_ERROR.getCode(), ApiExceptionEnum.SYSTEM_ERROR.getMsg());
         }
     }
 
