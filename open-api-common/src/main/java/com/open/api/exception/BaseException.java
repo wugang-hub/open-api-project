@@ -7,24 +7,37 @@ import java.text.MessageFormat;
  * @author wugang
  */
 public class BaseException extends RuntimeException {
-    protected String msg;
-    protected String code;
+
+    protected boolean success;
+    protected String errorMsg;
+    protected String errorCode;
+    protected Object data;
 
     protected BaseException(String message) {
         super(message);
     }
 
-    protected BaseException(String code, String msgFormat, Object... args) {
+    protected BaseException(Boolean success, String code, String msgFormat, Object... args) {
         super(MessageFormat.format(msgFormat, args));
-        this.code = code;
-        this.msg = MessageFormat.format(msgFormat, args);
+        this.success = success;
+        this.errorCode = code;
+        this.errorMsg = MessageFormat.format(msgFormat, args);
+        this.data = null;
     }
 
-    public String getMsg() {
-        return this.msg;
+    public String getErrorMsg() {
+        return this.errorMsg;
     }
 
-    public String getCode() {
-        return this.code;
+    public String getErrorCode() {
+        return this.errorCode;
+    }
+
+    public Boolean getSuccess(){
+        return this.success;
+    }
+
+    public Object getData() {
+        return this.data;
     }
 }

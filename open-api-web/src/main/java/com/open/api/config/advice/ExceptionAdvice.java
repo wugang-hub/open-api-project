@@ -42,7 +42,7 @@ public class ExceptionAdvice {
             LOGGER.warn("全局业务处理异常 >> error = {}", exception.getMessage(), exception);
             throw exception;
         } catch (BusinessException e) {
-            result = ResultModel.error(e.getCode(), e.getMsg());
+            result = ResultModel.error(e.getErrorCode(), e.getErrorMsg());
 
         } catch (HttpRequestMethodNotSupportedException e) {
             String errorMsg = MessageFormat.format(ApiExceptionEnum.INVALID_REQUEST_ERROR.getMsg(), e.getMethod(), e.getSupportedHttpMethods());

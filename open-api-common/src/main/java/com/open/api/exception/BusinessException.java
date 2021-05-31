@@ -15,11 +15,11 @@ public class BusinessException extends BaseException {
     }
 
     public BusinessException(String code, String message) {
-        super(code, message);
+        super(false, code, message);
     }
 
     public BusinessException(EnumInterface enums, Object... args) {
-        super(enums.getCode(), enums.getMsg(), args);
+        super(false, enums.getCode(), enums.getMsg(), args);
     }
 
 }
