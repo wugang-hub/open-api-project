@@ -1,15 +1,11 @@
-package com.open.api.web.bo;
+package com.open.api.model;
 
 import lombok.Data;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 public class Test1BO implements Serializable {

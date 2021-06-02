@@ -1,15 +1,14 @@
-package com.open.api.web.controller;
+package com.open.api.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.open.api.config.gateway.ApiClient;
+import com.open.api.model.RequestModel;
 import com.open.api.model.ResultModel;
-import com.open.api.util.SystemClock;
-import com.open.api.web.bo.RequestModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.WebUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class OpenApiController {
     private ApiClient apiClient;
 
     /**
-     * 统一网关入口
+     * 统一校验入口
      * @author wugang
      */
     /**
