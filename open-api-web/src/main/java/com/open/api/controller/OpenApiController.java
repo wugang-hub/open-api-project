@@ -2,6 +2,10 @@ package com.open.api.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.open.api.config.gateway.ApiClient;
+import com.open.api.dao.UserSecret;
+import com.open.api.enums.ApiExceptionEnum;
+import com.open.api.mapper.UserInfoMapper;
+import com.open.api.mapper.UserSecretMapper;
 import com.open.api.model.RequestModel;
 import com.open.api.model.ResultModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +19,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 统一网关
+ * 统一校验入口
+ * @author wugang
+ */
+/**
+ 请求body示例， 请求格式 JSON
+ {
+ "app_id":"101",
+ "method":"open.api.test.one.method1",
+ "version":"1.0",
+ "api_request_id":"1111",
+ "charset":"utf-8",
+ "sign_type":"RSA2",
+ "sign":"bpy8NrCnRq8lK9wVWI0EHNJVUgEpJFWlwOIIvMOUYfflQsvRzw8gCFNLpT/0pTOHeHwB/Cn8tMmXCzv9fnm8cUXlAAofsRYOneVseGt+ArgtsXGitjACA0L3Krbn2SsG+xEL/VbMGW2UwyLHx8FNz88ZzbORSKaERPC7tL3MWpQ=",
+ "content":"{'username':'admin','password':'admin'}"
+ }
  */
 @RestController
 @RequestMapping("/open")
@@ -24,23 +42,9 @@ public class OpenApiController {
     @Autowired
     private ApiClient apiClient;
 
-    /**
-     * 统一校验入口
-     * @author wugang
-     */
-    /**
-     请求body示例， 请求格式 JSON
-     {
-     "app_id":"101",
-     "method":"open.api.test.one.method1",
-     "version":"1.0",
-     "api_request_id":"1111",
-     "charset":"utf-8",
-     "sign_type":"RSA2",
-     "sign":"bpy8NrCnRq8lK9wVWI0EHNJVUgEpJFWlwOIIvMOUYfflQsvRzw8gCFNLpT/0pTOHeHwB/Cn8tMmXCzv9fnm8cUXlAAofsRYOneVseGt+ArgtsXGitjACA0L3Krbn2SsG+xEL/VbMGW2UwyLHx8FNz88ZzbORSKaERPC7tL3MWpQ=",
-     "content":"{'username':'zhangsan','password':'123'}"
-     }
-     */
+    @Autowired
+    private UserSecretMapper userSecretMapper;
+
     @PostMapping("/gateway")
     public ResultModel gateway(@RequestBody RequestModel req, HttpServletRequest request) throws Throwable {
         //封装参数map
@@ -54,10 +58,15 @@ public class OpenApiController {
         params.put("sign", req.getSign());
         params.put("content", JSON.parse(req.getContent()).toString());
 
+        //通过appId获取对用的公私钥
+        UserSecret userSecret = userSecretMapper.getInfoByAppId(req.getAppId());
+        if(userSecret == null){
+            return ResultModel.error(ApiExceptionEnum.APP_ID_IS_NULL.getCode(), ApiExceptionEnum.APP_ID_IS_NULL.getMsg());
+        }
         //ip校验
-        apiClient.checkIpAddr(request);
+        apiClient.checkIpAddr(request, req.getApiRequestId(), userSecret.getIp());
         //验签
-        apiClient.checkSign(params, req.getApiRequestId(), req.getCharset(), req.getSignType());
+        apiClient.checkSign(userSecret.getPrivateKey(), userSecret.getPublicKey(), params, req.getApiRequestId(), req.getCharset(), req.getSignType());
         //请求接口
         ResultModel result = apiClient.invoke(req.getMethod(), req.getApiRequestId(), JSON.parse(req.getContent()).toString());
 

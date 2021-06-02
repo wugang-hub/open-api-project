@@ -1,10 +1,6 @@
 package com.open.api.config.gateway;
 
-import com.alibaba.fastjson.JSON;
 import com.alipay.api.AlipayApiException;
-import com.alipay.api.internal.util.AlipaySignature;
-import com.alipay.api.internal.util.StreamUtil;
-import com.alipay.api.internal.util.codec.Base64;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -17,17 +13,12 @@ import com.open.api.model.ResultModel;
 import com.open.api.util.Base64Util;
 import com.open.api.util.ValidateUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -74,15 +65,15 @@ public class ApiClient {
      * ip校验
      * @param request 请求参数request
      */
-    public void checkIpAddr(HttpServletRequest request){
-        LOGGER.info("ip校验开始");
+    public void checkIpAddr(HttpServletRequest request, String requestRandomId, String ip){
+        LOGGER.info(requestRandomId + ">>>>>>>>ip校验开始");
         String ipAddr = getIpAddr(request);
         System.out.println(ipAddr);
-        if(StringUtils.isEmpty(ipAddr) || !ipAddr.equals(applicationProperty.getIpAddr())){
-            LOGGER.info("ip校验失败");
+        if(StringUtils.isEmpty(ipAddr) || !ipAddr.equals(ip)){
+            LOGGER.info(requestRandomId + ">>>>>>>>ip校验失败");
             throw new BusinessException(ApiExceptionEnum.INVALID_IP.getCode(), ApiExceptionEnum.INVALID_IP.getMsg());
         }
-        LOGGER.info("ip校验成功");
+        LOGGER.info(requestRandomId + ">>>>>>>>ip校验成功");
     }
 
     /**
@@ -93,7 +84,7 @@ public class ApiClient {
      * @param charset         请求编码
      * @param signType        签名格式
      */
-    public void checkSign(Map<String, Object> params, String requestRandomId, String charset, String signType) {
+    public void checkSign(String privateKey, String publicKey, Map<String, Object> params, String requestRandomId, String charset, String signType) {
         try {
             //校验签名开关
             if (!applicationProperty.getIsCheckSign()) {
@@ -104,15 +95,15 @@ public class ApiClient {
             for (String s : params.keySet()) {
                 map.put(s, params.get(s).toString());
             }
-            LOGGER.warn("开始验签");
-            boolean checkSign = rsaCheckV1(map, applicationProperty.getPublicKey(), applicationProperty.getPrivateKey(), charset, signType);
+            LOGGER.warn(requestRandomId + ">>>>>>>>开始验签");
+            boolean checkSign = rsaCheckV1(map, publicKey, privateKey, charset, signType);
             if (!checkSign) {
-                LOGGER.info("验签失败");
+                LOGGER.info(requestRandomId + ">>>>>>>>验签失败");
                 throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
             }
-            LOGGER.warn("验签成功");
+            LOGGER.warn(requestRandomId + ">>>>>>>>验签成功");
         } catch (Exception e) {
-            LOGGER.error("验签异常");
+            LOGGER.error(requestRandomId + ">>>>>>>>验签异常");
             throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
         }
     }
@@ -121,6 +112,10 @@ public class ApiClient {
         String sign = (String)params.get("sign");
         String content = getSignCheckContentV1(params);
         String instanceTag = SIGN_ALGORITHMS;
+
+        //生成签名，自测用的，后面是通过第三方接口传过来
+        sign = sign(content, privateKey, charset, instanceTag);
+
         if ("RSA".equals(signType)) {
             instanceTag = SIGN_ALGORITHMS;
         } else if ("RSA2".equals(signType)) {
@@ -128,8 +123,6 @@ public class ApiClient {
         } else {
             throw new AlipayApiException("Sign Type is Not Support : signType=" + signType);
         }
-        //生成签名，自测用的，后面是通过第三方接口传过来
-        sign = sign(content, privateKey, charset, instanceTag);
 
         return doCheck(content, sign, publicKey, charset, instanceTag);
     }
@@ -216,13 +209,13 @@ public class ApiClient {
         //获取api方法
         ApiModel apiModel = apiContainer.get(method);
         if (null == apiModel) {
-            LOGGER.info("API方法不存在");
+            LOGGER.info(requestRandomId + ">>>>>>>>API方法不存在");
             throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
         }
         //获得spring bean
         Object bean = ApplicationContextHelper.getBean(apiModel.getBeanName());
         if (null == bean) {
-            LOGGER.warn("API方法不存在");
+            LOGGER.warn(requestRandomId + ">>>>>>>>API方法不存在");
             throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
         }
         //处理业务参数
@@ -236,6 +229,9 @@ public class ApiClient {
         //执行对应方法
         try {
             Object obj = apiModel.getMethod().invoke(bean, requestRandomId, param);
+            if(null == obj){
+                return ResultModel.error(ApiExceptionEnum.RESULT_IS_NULL.getCode(), ApiExceptionEnum.RESULT_IS_NULL.getMsg());
+            }
             return ResultModel.success(obj);
         } catch (Exception e) {
             if (e instanceof InvocationTargetException) {

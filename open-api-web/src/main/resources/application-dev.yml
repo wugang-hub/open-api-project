@@ -1,0 +1,21 @@
+#数据源配置
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/baas?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: ceshi
+    password: wugang
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+open:
+  api:
+    common:
+      key:
+        #ip地址校验（本地测试地址）
+        ipAddr: 127.0.0.1
+        #是否校验签名
+        isCheckSign: true
+        #开放接口公钥
+        publicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwdK0le7UypaYWEWBoQkGTpu2nlYnM+iX8pa7Gz9neSnANfcuxrMgmmXrG+Dw6f3OQpiHl4mbKelyVjJTBLh4cvo1am2OSZvBjefZNshphx4ctBtx6BpGIRwlTvJRsjajMCY3RyF6px+Ehz0zeDBf7w2M6GZnSv2YhPp2YIZZo/01GYVJ4RgzzfkEEKyC+96+shqANHVOaiiG4byMJL8zv9q3kshSNCA1NT8r7toq8wPYhUKwCas/i5GauyRCIX+KhCpD9+/HTkFmr0PUWoNIZ61lRpTMbiTfDWU/5tJ3UPwdk6oVM3ZwkLoBAO8HXHvPk6avCupXq63u4wGrn30eiwIDAQAB
+        #开放接口私钥
+        privateKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDB0rSV7tTKlphYRYGhCQZOm7aeVicz6JfylrsbP2d5KcA19y7GsyCaZesb4PDp/c5CmIeXiZsp6XJWMlMEuHhy+jVqbY5Jm8GN59k2yGmHHhy0G3HoGkYhHCVO8lGyNqMwJjdHIXqnH4SHPTN4MF/vDYzoZmdK/ZiE+nZghlmj/TUZhUnhGDPN+QQQrIL73r6yGoA0dU5qKIbhvIwkvzO/2reSyFI0IDU1Pyvu2irzA9iFQrAJqz+LkZq7JEIhf4qEKkP378dOQWavQ9Rag0hnrWVGlMxuJN8NZT/m0ndQ/B2TqhUzdnCQugEA7wdce8+Tpq8K6lerre7jAauffR6LAgMBAAECggEBAIv3vF9V5KcUD5oXP6BqIvrbagp3zsGmoywVe7MWm4OdCeguw8HME6xME3fDflaL6cqf2bMuNTYUFnR2zQroqFrno3FjAlDXwPPYTT1JhyODNFlARIbHioNYjvyu8x5OZJRd1KdyXt+XXB5JrQSLcovwbiRZ5xf5gI3vTVMxUkSgTxf2P2smaXLZ2k6epSlvFr8u+SJaGOgjKCvbGf+jXyL0L8kntukNLocnSXU3sfFmAmd87DxPFdXAFDnS09tWOcjHfIZmwjHMX3qVP/2jj1DWOjIW0Ow/VRegbYTpLmSQTMcOUaFRprvwd0ZKaZ0aQMNPqPrqkHzrfQsnfjxY+akCgYEA+vbt40rIBDsN5HCPGbyDBU0/+A3wsGh4nqvY9JKACaMpg/FvyMz37GpL8AOMy/mUCVXjVyMoNUFZf/fEhMblBuYQBmgMVk1IQaVESvUlZ33Vgot0TU8YHY2Hpk541e3vKL0X0X6XLgS6CZ63cMx04uZxoFEWlJJm/qqLru3MQp8CgYEAxbZFVgnQ9XTQlHHgpUiS/R7qHo5joBDzlF+m29CYplI5nJUmntoChnHZ6RBoiPW58A3NJOlfIL6J2+Mwwd6kHWD2DSwVDRfk7Hb5Dw6o+tOf+In+zuPZtopr6L7oiKQtwXtGV88ZhDdqX9z5ge9EYP4Psd0Mfchv5vkJENreqJUCgYEAw8easTQHcXV4UvuURymOtLYc7zBA0f3OC0pYiAM5q0sD+hCBeg6cYmxSLT03u3BKEjZUkge1OEZwwanSPxrCVG1plvXYmgLUGZIKAsfXlDLQO3T7F8xaLcPZTN3u2kUxy4Aocp/k5Ft/nj2ZMX/ut4u6nKxlhyXm/0igi6irLlUCgYAWpalNkLRJ2Yam6mB0Llr/+ZGRzHem9yofndFMLpm9u39z6zXQTmKpqdLvOnzu607QK5SLHNxTsN+zu1NzcaBU6S1mFt2WcV08pOgkjGZYzPLvEkeIxVrD6RkxQOT7+epv1kIZftSKa5qYvoQqGRE5FwEPO6XZpqMCzxX1w0xr/QKBgDeom9MiI9a125jr/n9ghSWfvaxCXgPrdojr8QZrlo028iT711ND8QUwCbb9GDr+pyXesANCm78zhdltfeNFimEUktyS0F8Li2+GbYjTvLNXtwxTKZcOXRR+MC5bMHq4hY/+71NhnGazy3yidHn0doReezqGvkotJuRJSr+l1qmU
