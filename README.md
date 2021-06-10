@@ -1,11 +1,11 @@
 # open-api-project
 一、项目介绍 : open-api-project 对外接口统一安全验证及鉴权
-Spring Boot + MyBatis-plus + freemarker + mysql + jdk1.8
+Spring Boot + MyBatis-plus + MyBatis-plus + freemarker + jdk1.8
 
 maven repository详情已上传到我的GitHub（https://github.com/wugang-hub/maven-repo.git），可以从上面下载
 
 二、设计思路：
-公私钥对：公钥加密，私钥解密；  私钥生成签名，公钥验签。
+公私钥对：公钥加密，私钥解密；  私钥生成签名，公钥验签。：
 1、生成公私钥对，绑定app_id，存入数据库
 2、将app_id和私钥对外
 3、对外根据app_id和私钥生成自己的签名sign
@@ -15,13 +15,13 @@ maven repository详情已上传到我的GitHub（https://github.com/wugang-hub/m
 注意：签名类型signType  和  签名sign  要保持一致，否则验签不过;
 如果需要IP校验，可以将IP设计为app_id的value，去绑定公私钥对。
 
-三、配置文件说明：
-1、application-common.yml：
-    服务端口设置、日志配置、mybatis-plus配置
-2、application-dev.yml：
-    数据库信息配置、静态参数设置
-3、init.sql:
-    初始化数据库表结构及数据
+详细设计请看对外接口服务设计文档：
+![Image text](https://raw.githubusercontent.com/wugang-hub/gateway/master/对外接口服务文档设计.docx)
+
+三、配置文件说明
+1、application-common.yml：服务端口设置、日志配置、mybatis-plus配置。
+2、application-dev.yml：数据库信息配置、静态参数设置。
+3、init.sql：初始化数据库表结构及数据   
 
 四、使用说明：
 1、demo中简单设计了用户和密码表，后面根据具体业务需求往里面填充内同。

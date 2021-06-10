@@ -8,6 +8,7 @@ import com.open.api.mapper.UserInfoMapper;
 import com.open.api.mapper.UserSecretMapper;
 import com.open.api.model.RequestModel;
 import com.open.api.model.ResultModel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,8 +48,17 @@ public class OpenApiController {
 
     @PostMapping("/gateway")
     public ResultModel gateway(@RequestBody RequestModel req, HttpServletRequest request) throws Throwable {
+        ResultModel result = null;
+        //判断参数是否为空
+        if(StringUtils.isEmpty(req.getAppId()) || StringUtils.isEmpty(req.getMethod()) ||
+                StringUtils.isEmpty(req.getVersion()) || StringUtils.isEmpty(req.getApiRequestId()) ||
+                StringUtils.isEmpty(req.getCharset()) || StringUtils.isEmpty(req.getSignType()) ||
+                StringUtils.isEmpty(req.getSign()) || StringUtils.isEmpty(req.getContent())){
+            return ResultModel.error(ApiExceptionEnum.INVALID_PUBLIC_PARAM.getCode(), ApiExceptionEnum.INVALID_PUBLIC_PARAM.getMsg());
+        }
+
         //封装参数map
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put("app_id", req.getAppId());
         params.put("method", req.getMethod());
         params.put("version", req.getVersion());
@@ -68,7 +78,7 @@ public class OpenApiController {
         //验签
         apiClient.checkSign(userSecret.getPrivateKey(), userSecret.getPublicKey(), params, req.getApiRequestId(), req.getCharset(), req.getSignType());
         //请求接口
-        ResultModel result = apiClient.invoke(req.getMethod(), req.getApiRequestId(), JSON.parse(req.getContent()).toString());
+        result = apiClient.invoke(req.getMethod(), req.getApiRequestId(), JSON.parse(req.getContent()).toString());
 
         return result;
     }

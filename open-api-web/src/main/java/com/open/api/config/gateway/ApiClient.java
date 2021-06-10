@@ -68,10 +68,9 @@ public class ApiClient {
     public void checkIpAddr(HttpServletRequest request, String requestRandomId, String ip){
         LOGGER.info(requestRandomId + ">>>>>>>>ip校验开始");
         String ipAddr = getIpAddr(request);
-        System.out.println(ipAddr);
         if(StringUtils.isEmpty(ipAddr) || !ipAddr.equals(ip)){
             LOGGER.info(requestRandomId + ">>>>>>>>ip校验失败");
-            throw new BusinessException(ApiExceptionEnum.INVALID_IP.getCode(), ApiExceptionEnum.INVALID_IP.getMsg());
+            throw new BusinessException(ApiExceptionEnum.INVALID_IP);
         }
         LOGGER.info(requestRandomId + ">>>>>>>>ip校验成功");
     }
@@ -84,17 +83,13 @@ public class ApiClient {
      * @param charset         请求编码
      * @param signType        签名格式
      */
-    public void checkSign(String privateKey, String publicKey, Map<String, Object> params, String requestRandomId, String charset, String signType) {
+    public void checkSign(String privateKey, String publicKey, Map<String, String> map, String requestRandomId, String charset, String signType) {
         try {
             //校验签名开关
             if (!applicationProperty.getIsCheckSign()) {
                 return;
             }
-            //map类型转换
-            Map<String, String> map = new HashMap<>(params.size());
-            for (String s : params.keySet()) {
-                map.put(s, params.get(s).toString());
-            }
+
             LOGGER.warn(requestRandomId + ">>>>>>>>开始验签");
             boolean checkSign = rsaCheckV1(map, publicKey, privateKey, charset, signType);
             if (!checkSign) {
@@ -102,13 +97,13 @@ public class ApiClient {
                 throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
             }
             LOGGER.warn(requestRandomId + ">>>>>>>>验签成功");
-        } catch (Exception e) {
+        } catch (BusinessException e) {
             LOGGER.error(requestRandomId + ">>>>>>>>验签异常");
-            throw new BusinessException(ApiExceptionEnum.INVALID_SIGN.getCode(), ApiExceptionEnum.INVALID_SIGN.getMsg());
+            throw new BusinessException(e.getErrorCode(), e.getErrorMsg());
         }
     }
 
-    private static boolean rsaCheckV1(Map<String, String> params, String publicKey, String privateKey, String charset, String signType) throws AlipayApiException {
+    private static boolean rsaCheckV1(Map<String, String> params, String publicKey, String privateKey, String charset, String signType) throws BusinessException {
         String sign = (String)params.get("sign");
         String content = getSignCheckContentV1(params);
         String instanceTag = SIGN_ALGORITHMS;
@@ -121,7 +116,7 @@ public class ApiClient {
         } else if ("RSA2".equals(signType)) {
             instanceTag = SIGN_SHA256RSA_ALGORITHMS;
         } else {
-            throw new AlipayApiException("Sign Type is Not Support : signType=" + signType);
+            throw new BusinessException(ApiExceptionEnum.NOT_SUPPORT_SIGN_TYPE);
         }
 
         return doCheck(content, sign, publicKey, charset, instanceTag);
@@ -210,13 +205,13 @@ public class ApiClient {
         ApiModel apiModel = apiContainer.get(method);
         if (null == apiModel) {
             LOGGER.info(requestRandomId + ">>>>>>>>API方法不存在");
-            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
+            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
         }
         //获得spring bean
         Object bean = ApplicationContextHelper.getBean(apiModel.getBeanName());
         if (null == bean) {
             LOGGER.warn(requestRandomId + ">>>>>>>>API方法不存在");
-            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST.getCode(), ApiExceptionEnum.API_NOT_EXIST.getMsg());
+            throw new BusinessException(ApiExceptionEnum.API_NOT_EXIST);
         }
         //处理业务参数
         // 忽略JSON字符串中存在，而在Java中不存在的属性
@@ -230,14 +225,14 @@ public class ApiClient {
         try {
             Object obj = apiModel.getMethod().invoke(bean, requestRandomId, param);
             if(null == obj){
-                return ResultModel.error(ApiExceptionEnum.RESULT_IS_NULL.getCode(), ApiExceptionEnum.RESULT_IS_NULL.getMsg());
+                throw new BusinessException(ApiExceptionEnum.RESULT_IS_NULL);
             }
             return ResultModel.success(obj);
         } catch (Exception e) {
             if (e instanceof InvocationTargetException) {
                 throw ((InvocationTargetException) e).getTargetException();
             }
-            throw new BusinessException(ApiExceptionEnum.SYSTEM_ERROR.getCode(), ApiExceptionEnum.SYSTEM_ERROR.getMsg());
+            throw new BusinessException(ApiExceptionEnum.SYSTEM_ERROR);
         }
     }
 
