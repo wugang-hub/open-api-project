@@ -32,7 +32,7 @@ import java.util.Map;
  "charset":"utf-8",
  "sign_type":"RSA2",
  "sign":"bpy8NrCnRq8lK9wVWI0EHNJVUgEpJFWlwOIIvMOUYfflQsvRzw8gCFNLpT/0pTOHeHwB/Cn8tMmXCzv9fnm8cUXlAAofsRYOneVseGt+ArgtsXGitjACA0L3Krbn2SsG+xEL/VbMGW2UwyLHx8FNz88ZzbORSKaERPC7tL3MWpQ=",
- "content":"{'username':'admin','password':'admin'}"
+ "content":"{'username':'admin','password':'admin'}" //如果为数组"{'item_list':[{'username':'admin','password':'123'}]}"
  }
  */
 @RestController
