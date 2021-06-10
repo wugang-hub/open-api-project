@@ -25,4 +25,4 @@ maven repository详情已上传到我的GitHub: https://github.com/wugang-hub/ma
 
 四、使用说明：
 1、demo中简单设计了用户和密码表，后面根据具体业务需求往里面填充内同。
-2、下载下来启动Appication就可以访问接口：http://localhost:8821/open/gateway,使用postman测试，传入参数即可。
+2、下载下来启动Appication就可以访问接口：http://localhost:8821/open/gateway ,使用postman测试，传入参数即可。
