@@ -2,7 +2,7 @@
 一、项目介绍 : open-api-project 对外接口统一安全验证及鉴权
 Spring Boot + MyBatis-plus + MyBatis-plus + freemarker + jdk1.8
 
-maven repository详情已上传到我的GitHub（https://github.com/wugang-hub/maven-repo.git），可以从上面下载
+maven repository详情已上传到我的GitHub: https://github.com/wugang-hub/maven-repo.git
 
 二、设计思路：
 公私钥对：公钥加密，私钥解密；  私钥生成签名，公钥验签。：
@@ -16,7 +16,7 @@ maven repository详情已上传到我的GitHub（https://github.com/wugang-hub/m
 如果需要IP校验，可以将IP设计为app_id的value，去绑定公私钥对。
 
 详细设计请看对外接口服务设计文档：
-![Image text](https://raw.githubusercontent.com/wugang-hub/gateway/master/对外接口服务文档设计.docx)
+![Image text](https://github.com/wugang-hub/open-api-project/blob/master/%E5%AF%B9%E5%A4%96%E6%8E%A5%E5%8F%A3%E6%9C%8D%E5%8A%A1%E6%96%87%E6%A1%A3%E8%AE%BE%E8%AE%A1.docx)
 
 三、配置文件说明
 1、application-common.yml：服务端口设置、日志配置、mybatis-plus配置。
